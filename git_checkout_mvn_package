@@ -6,6 +6,8 @@ node{
        branch: 'master'
   }
   stage('Maven Package'){
-    sh 'mvn clean package'
+    def mvnHome = tool name: 'maven3', type: 'maven'
+    def mvn = "${mvnHome}/bin/mvn"
+    sh "${mvn} clean package"
   }
 }
