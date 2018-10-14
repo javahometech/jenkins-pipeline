@@ -1,0 +1,11 @@
+node{
+  stage('SCM Checkout'){
+  // Behind the scenes it calls git groovy function with our arguments
+   git credentialsId: 'github', 
+       url: 'https://github.com/javahometech/my-app',
+       branch: 'master'
+  }
+  stage('Maven Package'){
+    sh 'mvn clean package'
+  }
+}
