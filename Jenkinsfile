@@ -12,4 +12,7 @@ node{
         echo 'Welcome to Pipeline as Code'
     }
     
+     stage('Push Image'){
+        echo 'Welcome to Pipeline as Code'
+    }
 }
