@@ -10,4 +10,20 @@ node{
     def mvn = "${mvnHome}/bin/mvn"
     sh "${mvn} clean package"
   }
+  stage('Deploy-to-Dev'){
+    // rename warfile
+    sh 'mv target/myweb*.war target/myweb.war'
+   
+    sshagent(['tomcat-dev']) {
+         // stop tomcat server
+         ssh -o strictHostKeyChecking=no  ec2-user@192.67.1.2 /opt/tomcat8/bin/shutdown.sh
+         // remove old war on tomcat
+         ssh ec2-user@192.67.1.2 rm /opt/tomcat8/webapp/myweb*
+         // copy new war to tomcat
+         scp target/myweb.war ec2-user@192.67.1.2:/opt/tomcat8/webapps/
+         // start tomcat
+         ssh ec2-user@192.67.1.2 /opt/tomcat8/bin/startup.sh
+    }
+    
+  }
 }
