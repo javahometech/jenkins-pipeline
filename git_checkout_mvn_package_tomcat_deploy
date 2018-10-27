@@ -15,17 +15,25 @@ node{
     sh 'mv target/myweb*.war target/myweb.war'
    
     sshagent(['tomcat-dev']) {
-         def tomcatIp='192.67.1.2'
+         def tomcatIp='172.31.14.149'
          def tomcatUsr='ec2-user'
          def stopTomcat = "${tomcatUsr}@${tomcatIp} /opt/tomcat8/bin/shutdown.sh"
          def startTomcat = "${tomcatUsr}@${tomcatIp} /opt/tomcat8/bin/startup.sh"
          def webApps = "/opt/tomcat8/webapps/"
-         // stop tomcat server
-         sh "ssh -o strictHostKeyChecking=no  ${stopTomcat}"
-         // remove old war on tomcat
-         sh "ssh ec2-user@192.67.1.2 rm /opt/tomcat8/webapp/myweb*"
+         try{
+			 // stop tomcat server
+				sh "ssh -o strictHostKeyChecking=no  ${stopTomcat}"
+		 }catch(e){
+		 
+		 }
+         try{
+			// remove old war on tomcat
+			sh "ssh ec2-user@${tomcatIp} rm /opt/tomcat8/webapp/myweb*"
+		 }catch(e){
+		 
+		 }
          // copy new war to tomcat
-         sh "scp target/myweb.war ${tomcatUsr}@${tomcatIp}/${webApps}"
+         sh "scp target/myweb.war ${tomcatUsr}@${tomcatIp}:${webApps}"
          // start tomcat
          sh "ssh ${startTomcat}"
     }
